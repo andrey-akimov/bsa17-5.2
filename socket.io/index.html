@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+	 <link rel="stylesheet" href="./style.css"> 
+</head>
+
+<style>
+* {
+  transition: all .5s; }
+
+html {
+  font-family: Roboto, Calibri, Trebuchet, sans-serif; }
+
+body {
+  height: 100vh;
+  box-sizing: border-box; }
+
+.wrapper {
+  height: 100vh;
+  overflow: hidden; }
+
+.main {
+  width: auto;
+  height: 80vh;
+  margin-top: 50px;
+  padding: 20px 3% 0 23%;
+  overflow-y: scroll; }
+
+.nav {
+  height: 5vh;
+  line-height: 46px;
+  padding: 0 20px; }
+  .nav li a {
+    font-size: 18px; }
+
+.main:after {
+  content: "";
+  display: table;
+  clear: both; }
+
+.message-form {
+  height: 15vh;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 80%;
+  z-index: 10;
+	background-color: #ffebee; }
+	
+.message-form .row {
+	position: relative; }
+	
+#typing {
+	position: absolute;
+	color: #999;
+	top: -30px;
+	font-size: 16px;
+	left: 10px; }
+
+#exit {
+color: #999;
+position: absolute;
+text-align: center;
+top: -30px;
+bottom: 0;
+left: 0;
+right: 0;
+margin: auto; }
+
+textarea.materialize-textarea {
+  padding: 0;
+  margin: 3px;
+  overflow: hidden;
+  max-height: 3rem; }
+
+.message {
+  width: 60%;
+  background-color: #f5f5f5;
+  padding: 10px 15px;
+  margin-bottom: 30px;
+  border-radius: 20px;
+  overflow: hidden; }
+  .message:nth-child(2n) {
+    float: right; }
+  .message:nth-child(2n + 1) {
+    float: left; }
+  .message .row {
+    margin-bottom: 5px; }
+
+.message__name {
+  margin-left: 20px;
+  font-size: 14px; }
+
+.message__time {
+  margin-right: 20px;
+  font-size: 12px; }
+
+.message__text {
+  font-size: 18px;
+  line-height: 24px;
+  margin-bottom: 5px; }
+
+.nav {
+  position: fixed;
+  top: 0;
+  z-index: 10; }
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  z-index: 5;
+  height: 100%;
+  margin: 0;
+  padding: 70px 0 0 0;
+  width: 20%;
+  background-color: #ffebee; }
+
+.user {
+  position: relative;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  margin-bottom: 20px;
+  padding-left: 5px;
+  background-color: #fafafa;
+	font-size: 18px; }
+	
+.user__name {
+	font-size: 16px; }
+
+.user__alias {
+  color: #ee6e73;
+	font-size: 16px; }
+
+.user__status {
+  margin-right: 5px;
+  font-size: 12px;
+  line-height: 28px;
+  float: right; }
+
+.user.online .user__status {
+  color: #00c853; }
+
+.user.offline {
+  color: #999;
+  cursor: auto; }
+  .user.offline .user__alias {
+    color: #999;
+    cursor: auto; }
+
+.user.just .user__status {
+  color: #0277bd; }
+
+.to-you {
+  background-color: #f3e5f5;
+  box-shadow: 0 0 30px #ffcdd2; }
+
+#materialize-modal-overlay-1 {
+  pointer-events: none; }
+
+</style>
+
+<body>
+
+	<!-- begin wrapper -->
+	<div class="wrapper">
+
+		<!-- begin header-nav -->
+	  <nav class="nav">
+	    <div class="nav-wrapper">
+	      <a href="#" class="brand-logo">Chat</a>
+	      <ul id="nav-mobile" class="right hide-on-med-and-down">
+	        <li><a id="welcome" href="#"></a></li>
+	      </ul>
+	    </div>
+  	</nav>
+		<!-- end header-nav -->
+		
+		<div class="aligner">
+			
+			<!-- begin sidebar -->
+	  	<aside class="sidebar">
+		    <ul class="user-list" id="user-list"></ul>
+	  	</aside><!-- end sidebar -->
+
+		<!-- begin messegas -->
+		  <div class="main">
+		  	<div class="chat" id="chat"></div>
+
+		  		<!-- begin sender-messages -->
+		  	  <form class="col s12 message-form">
+		  	    <div class="row">
+							<span id="typing"></span>
+							<span id="exit"></span>
+		  	      <div class="input-field col s12">
+		  	        <textarea id="textarea1" class="materialize-textarea"></textarea>
+		  	        <label for="textarea1">Your text</label>
+		  	  			<a type="submit" id="send" class="waves-effect waves-light btn right">send</a>
+		  	      </div>
+		  	    </div>
+		  	  </form><!-- end sender-messages -->
+
+		  </div><!-- end messegas -->
+		  
+		</div>
+
+	</div><!-- end wrapper -->
+
+	  <!-- Modal Structure -->
+	  <div id="modal1" class="modal">
+	    <div class="modal-content">
+        <div class="row">
+          <div class="input-field col s6">
+            <input id="first_name" type="text" required>
+            <label for="first_name">First Name</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="alias" type="text" required>
+            <label for="alias">Alias</label>
+          </div>
+        </div>
+	    </div>
+	    <div class="modal-footer">
+	  		<button id="modal-btn" class="modal-action modal-close waves-effect waves-green btn-flat">Login</button>
+	    </div>
+      </div>
+      
+<script src="/socket.io/socket.io.js"></script>
+<!-- <script src="/js/script.js"></script> -->
+<!-- <script src="http://localhost:4000/socket.io/socket.io.js"></script> ?????????????-->
+
+
+
+<script>
+	window.onload = function(){
+		$('#modal1').modal('open');
+	};
+
+	(function(){
+
+		let modalBtn = document.getElementById('modal-btn');
+		let nameInp = document.getElementById('first_name');
+		let aliasInp = document.getElementById('alias');
+		let welcome = document.getElementById('welcome');
+		let messageInp = document.getElementById('textarea1');
+		let typing = document.getElementById('typing');
+		let exit = document.getElementById('exit');
+		let sendBtn = document.getElementById('send');
+		let userList = document.getElementById('user-list');
+		let chat = document.getElementById('chat');
+		let user;
+		let fName;
+		let alias;
+		let receiver;
+		let users = [];
+
+		let socket = io.connect();
+		
+    socket.on('connection', function (data) {
+			console.log(data);
+			socket.emit('answer', 'Client connected');
+		});
+
+
+		// Create new user
+		function newUser(){
+			let params = {
+				name: fName,
+				alias: alias,
+        status: 'just appeared'
+			};
+			socket.emit('new user', params, function (data) {
+				console.log(data);
+				user = data || 'user';
+				welcome.innerHTML = `Welcome ${user.name}`;
+			});
+		}
+		
+		modalBtn.addEventListener('click', function(){
+			if (nameInp.value !== '' && aliasInp.value !== '') {
+				fName = nameInp.value;
+				alias = aliasInp.value;
+				newUser();
+			}
+		});
+
+
+		// Create a message
+		function getAlias(message) {
+			let exp = message.match(/@([A-Z0-9])\w+/im);
+			return (exp != null && exp[0].slice(1));
+		}
+
+		function newMessage () {
+			if (user != undefined) {
+				let message = messageInp.value;
+				receiver = getAlias(message);
+				
+				if (message != '') {
+					let params = {
+						sender: user.alias,
+						receiver: receiver || '',
+						text: message
+					};
+					socket.emit('new message', params, function (data) {
+						console.log(data);
+					});
+					
+					messageInp.value = '';
+				}
+			} else {
+				$('#modal1').modal('open');
+			}
+
+		}
+
+		sendBtn.addEventListener('click', newMessage);
+
+
+		// Get users list
+		socket.on('get users', function (data) {
+			userList.innerHTML = '';
+			users = data;
+			users.forEach(function(user) {
+				let cutName = (user.name.length > 10) ? (user.name.substr(0, 7) + '...') : user.name;
+				let cutAlias = (user.alias.length > 10) ? (user.alias.substr(0, 7) + '...') : user.alias;
+				
+				let listItem = document.createElement('li');
+				userList.appendChild(listItem);
+				let spanName = document.createElement('span');
+				spanName.className = 'user__status';
+				spanName.className = 'user__name';
+				spanName.innerHTML = cutName;
+				listItem.appendChild(spanName);
+				let spanAlias = document.createElement('span');
+				spanAlias.className = 'user__alias';
+				listItem.appendChild(spanAlias);
+				spanAlias.innerHTML = `(@${cutAlias})`;
+				let spanStatus = document.createElement('span');
+				spanStatus.className = 'user__status';
+				listItem.appendChild(spanStatus);
+				if (user.status == 'online') {
+					spanStatus.innerHTML = 'online';
+					listItem.className = 'user online';
+				}
+				else if (user.status == 'offline') {
+					spanStatus.innerHTML = 'offline';
+					listItem.className = 'user offline';
+				} else {
+					spanStatus.innerHTML = 'just appeared';
+					listItem.className = 'user just';
+				}
+
+			});
+		})
+
+
+		// Get all messages
+		socket.on('get messages', function (data) {
+			if (user != undefined) {
+				chat.innerHTML = '';
+				data.forEach(function(message) {
+					for (let i = 0; i < users.length; i++) {
+						var userName;
+						if (users[i].alias == message.sender) {
+							userName = users[i].name;
+						}
+					}
+					if (getAlias(message.text) == user.alias) {
+						let msg = document.createElement('div');
+						msg.className = 'message to-you';
+						chat.appendChild(msg);
+						let row = document.createElement('div');
+						row.className = 'row';
+						msg.appendChild(row);
+						let name = document.createElement('div');
+						name.className = 'message__name left';
+						name.innerHTML = `${userName} (@${message.sender})`;
+						row.appendChild(name);
+						let time = document.createElement('div');
+						time.className = 'message__time right';
+						time.innerHTML = `${new Date(message.id).getHours()}: ${new Date(message.id).getMinutes()}`;
+						row.appendChild(time);
+						let text = document.createElement('div');
+						text.className = 'row message__text';
+						text.innerHTML = `${message.text}`;
+						msg.appendChild(text);
+					} else {
+						let msg = document.createElement('div');
+						msg.className = 'message';
+						chat.appendChild(msg);
+						let row = document.createElement('div');
+						row.className = 'row';
+						msg.appendChild(row);
+						let name = document.createElement('div');
+						name.className = 'message__name left';
+						name.innerHTML = `${userName} (@${message.sender})`;
+						row.appendChild(name);
+						let time = document.createElement('div');
+						time.className = 'message__time right';
+						time.innerHTML = `${new Date(message.id).getHours()}: ${new Date(message.id).getMinutes()}`;
+						row.appendChild(time);
+						let text = document.createElement('div');
+						text.className = 'row message__text';
+						text.innerHTML = `${message.text}`;
+						msg.appendChild(text);
+					}
+				});
+			}
+
+		})
+
+
+		// Typing
+		messageInp.addEventListener('keypress', function () {
+			socket.emit('on typing', user);
+		});
+
+		var timerId = null;
+
+		socket.on('typing', function (alias) {
+			typing.innerHTML = (alias) ? alias.alias + ' is typing...' : typing.innerHTML = 'Anonymous is typing...'
+			clearTimeout(timerId);
+			timerId = setTimeout(function() {
+				typing.innerHTML = '';
+			}, 500);
+		});
+
+		
+
+		socket.on('exit', function (user) {
+			exit.innerHTML = user.alias + ' now is offline :('
+			setTimeout(function() {
+				exit.remove();
+			}, 5000);
+		})
+
+	})();
+</script>
+</body>
+</html>
