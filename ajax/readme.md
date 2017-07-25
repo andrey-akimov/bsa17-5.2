@@ -1,9 +1,3 @@
-1. in ajax folder npm i
+1. in app folder npm i, then $node index.js
 
-2. input in console gulp
-
-3. in app folder npm i
-
-4. run server from index.js
-
-5. uncomment  main.js in js folder
+3. in ajax folder npm i, then input in console $gulp

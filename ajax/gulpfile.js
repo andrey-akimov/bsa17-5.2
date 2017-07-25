@@ -4,7 +4,6 @@ var gulp 					= require('gulp'),
 		sass 					= require('gulp-sass'),
 		browserSync 	= require('browser-sync'),
 		concat 				= require('gulp-concat'),
-		uglyfy 				= require('gulp-uglify'),
 		cssnano 			= require('gulp-cssnano'),
 		rename 				= require('gulp-rename'),
 		del						= require('del'),
@@ -24,19 +23,6 @@ gulp.task('sass', function () {								// Создаем таск sass
     }))
     .pipe(gulp.dest('app/css'))								// Выгружаем результата в папку app/css
     .pipe(browserSync.reload({stream: true}));// Обновляем css на странице при изменении
-});
-
-
-// Таск 'min' содержит в себе 2 функции: кокатенацию и минификацию подключаемых js библиотек
-gulp.task('js-min', function() {
-  return gulp.src([														//Передаем массивом библиотеки для обработки
-  	'app/libs/jquery/jquery_2.2.4.min.js',
-  	'app/libs/bootstrap/bootstrap.min.js',
-		'app/js/main.js'
-  ])
-  .pipe(concat('main.min.js'))								//Объеденяем все библиотеки в один файл
-  .pipe(uglyfy())															//Минифицируем его
-  .pipe(gulp.dest('app/js'));									//Выгружаем объедененный минифицированный файл
 });
 
 
@@ -74,7 +60,7 @@ gulp.task('img', function() {
 
 
 // Таск 'watch' следит за файлами и запускает функцию, если находит в них изменения
-gulp.task('watch', ['browser-sync', 'css-min', 'js-min'], function () {	// Создаем таск gulp-watch. Всё, что в [] будет выполнено в первую очередь
+gulp.task('watch', ['browser-sync', 'css-min'], function () {	// Создаем таск gulp-watch. Всё, что в [] будет выполнено в первую очередь
   gulp.watch('app/sass/**/*.sass', ['sass']);														// Наблюдение за .sass файлами в папке sass
 	gulp.watch('app/*.html', browserSync.reload);													// Наблюдение за .html файлами в корне проекта
 	gulp.watch('app/js/**/*.js', browserSync.reload);											// Наблюдение за .js файлами в папке js
@@ -86,7 +72,7 @@ gulp.task('default', ['watch']);
 
 
 // Таск 'build' перемещает файлы в указанные директории
-gulp.task('build', ['clean', 'img', 'css-min', 'js-min'], function() {
+gulp.task('build', ['clean', 'img', 'css-min'], function() {
 
   var buildCss = gulp.src([
   	'app/css/style.css',
