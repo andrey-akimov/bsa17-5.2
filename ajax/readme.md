@@ -1,3 +1,6 @@
-1. in app folder npm i, then $node index.js
+A simple chat with vanilla JS.
+===================
 
-3. in ajax folder npm i, then input in console $gulp
+1. in app folder npm i, then $node server.js
+
+2. in ajax folder npm i, then $gulp

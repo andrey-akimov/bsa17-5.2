@@ -6,7 +6,9 @@ let path = require('path');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-server.listen(80);
+server.listen(80, () => {
+  console.log('Listen port 80');
+});
 
 let users = [];
 let messages = [];
